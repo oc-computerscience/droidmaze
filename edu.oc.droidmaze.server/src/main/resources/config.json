@@ -1,0 +1,10 @@
+{
+  "isTest": true,
+  "port": 9999,
+  "maze": {
+    "width": 10,
+    "height": 10,
+    "levels": 10,
+    "braidLevel": 1
+  }
+}

@@ -1,0 +1,44 @@
+plugins {
+    id "maven-publish"
+    id "java-library"
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.1'
+}
+
+dependencies {
+    compile "com.google.guava:guava:$guavaVersion"
+    compile "org.apache.commons:commons-lang3:$commonsLangVersion"
+    compile "org.apache.commons:commons-math3:$commonsMathVersion"
+    compile "commons-io:commons-io:$commonsIoVersion"
+    compile "com.google.code.gson:gson:$gsonVersion"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:$log4jVersion"
+    compile "org.jetbrains:annotations:$annotationVersion"
+    compile "com.google.inject:guice:$guiceVersion"
+
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    repositories {
+        maven {
+            // TODO
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+sourceCompatibility = "9"
+targetCompatibility = "9"
+
+javaModule.name = "edu.oc.droidmaze.api"

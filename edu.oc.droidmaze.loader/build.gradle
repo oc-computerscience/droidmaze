@@ -1,0 +1,57 @@
+plugins {
+    id "application"
+    id "java-library"
+    id "org.gradle.java.experimental-jigsaw" version "0.1.1"
+}
+
+ext.moduleName = "edu.oc.droidmaze.loader"
+
+archivesBaseName = "droidmaze-loader"
+
+sourceCompatibility = "9"
+targetCompatibility = "9"
+
+javaModule.name = moduleName
+
+dependencies {
+    compile project(":edu.oc.droidmaze.common")
+
+    compile "com.mashape.unirest:unirest-java:$unirestVersion"
+    compile "com.google.code.gson:gson:$gsonVersion"
+    compile "org.eclipse.jetty.websocket:websocket-client:$jettyWebsocketClientVersion"
+}
+
+mainClassName = "edu.oc.droidmaze.loader.Main"
+jar {
+    manifest {
+        attributes "Main-Class": project.mainClassName,
+                "Implementation-Title": "DroidMaze Loader",
+                "Implementation-Version": project.version,
+                "Specification-Title": "DroidMaze API",
+                "Specification-Version": project.version,
+                "Built-By": System.getProperty("user.name"),
+                "Built-Date": new Date(),
+                "Built-JDK": System.getProperty("java.version"),
+                "Automatic-Module-Name": moduleName
+    }
+}
+
+startScripts {
+    applicationName = archivesBaseName
+    doLast {
+        File bashScript = new File(outputDir, applicationName)
+        removeClasspath(bashScript.toPath(), applicationName)
+        File batScript = new File(outputDir, applicationName + ".bat")
+        removeClasspath(batScript.toPath(), applicationName)
+    }
+}
+
+distTar {
+    compression Compression.GZIP
+}
+
+distributions {
+    main {
+        applicationName = archivesBaseName
+    }
+}

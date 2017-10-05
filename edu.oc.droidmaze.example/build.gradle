@@ -1,0 +1,42 @@
+plugins {
+    id "distribution"
+    id "java-library"
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.1'
+}
+
+ext.moduleName = "edu.oc.droidmaze.example"
+
+sourceCompatibility = "9"
+targetCompatibility = "9"
+
+javaModule.name = moduleName
+
+configurations {
+    provided
+    compileOnly { extendsFrom provided }
+}
+
+dependencies {
+    provided project(":edu.oc.droidmaze.loader")
+}
+
+task droidConfig {
+    File outputFile = new File(project.buildDir, "config.json")
+    outputs.file(outputFile)
+
+    doFirst {
+        outputFile << '{"moduleName": "' + moduleName + '"}'
+    }
+}
+
+task droid(type: Zip, dependsOn: droidConfig) {
+    extension = "droid"
+    baseName = "example"
+    classifier = null
+    version = null
+    from (configurations.compile)
+    from (tasks.jar)
+    from (tasks.droidConfig)
+}
+
+build.dependsOn droid

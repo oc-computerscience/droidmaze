@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <TerminalConsole name="TerminalConsole">
+            <PatternLayout noConsoleNoAnsi="true" pattern="%highlightError{[%d{yyyy-MM-dd HH:mm:ss,SSS}] [%p] [%c]: %m%n%xEx}" />
+        </TerminalConsole>
+        <!-- Dummy to help enable JLine -->
+        <Console name="SysOut" target="SYSTEM_OUT"/>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="TerminalConsole" level="info" />
+        </Root>
+    </Loggers>
+</Configuration>

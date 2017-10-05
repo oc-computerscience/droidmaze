@@ -1,0 +1,41 @@
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
+subprojects {
+    ext {
+        // Dependencies for API
+        guiceVersion = "4.1.0"
+        annotationVersion = "13.0"
+        log4jVersion = "2.9.1"
+        // A collection of extremely common and useful Java libraries included by the loader
+        // as a convenience to the students building their droids
+        guavaVersion = "23.1-jre"
+        commonsLangVersion = "3.6"
+        commonsMathVersion = "3.6"
+        commonsIoVersion = "2.5"
+        gsonVersion = "2.8.2"
+        // General dependencies for both loader and server
+        unirestVersion = "1.4.9"
+        kotlinVersion = "1.1.51"
+        sparkVersion = "1.0.0-alpha"
+        jettyWebsocketClientVersion = "9.4.7.RC0"
+        apacheCompress = "1.14"
+    }
+
+    repositories {
+        jcenter()
+    }
+
+    ext.removeClasspath = { java.nio.file.Path path, String applicationName ->
+        def lines = Files.readAllLines(path)
+        def cappedName = applicationName.toUpperCase().replaceAll("-", "_") + "_OPTS"
+        for (int i = 0; i < lines.size(); i++) {
+            def line = lines[i]
+            lines[i] = line.replaceAll("-classpath \"\\\\\"\\\$CLASSPATH\\\\\"\" $mainClassName ", "")
+                .replaceAll("\\\$DEFAULT_JVM_OPTS \\\$JAVA_OPTS \\\$$cappedName", "\\\$JAVA_OPTS \\\$$cappedName \\\$DEFAULT_JVM_OPTS")
+                .replaceAll(" -classpath \"%CLASSPATH%\" $mainClassName ", "")
+                .replaceAll("%DEFAULT_JVM_OPTS% %JAVA_OPTS% %$cappedName%", "%JAVA_OPTS% %$cappedName% %DEFAULT_JVM_OPTS% ")
+        }
+        Files.write(path, lines, StandardCharsets.UTF_8)
+    }
+}

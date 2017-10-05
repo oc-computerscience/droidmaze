@@ -1,0 +1,70 @@
+buildscript {
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+
+    repositories {
+        jcenter()
+    }
+}
+
+plugins {
+    id "application"
+    id "org.jetbrains.kotlin.jvm" version "1.1.51"
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.1'
+}
+
+ext.moduleName = "edu.oc.droidmaze.server"
+
+archivesBaseName = "droidmaze-server"
+
+sourceCompatibility = "9"
+targetCompatibility = "9"
+
+javaModule.name = moduleName
+
+dependencies {
+    compile project(":edu.oc.droidmaze.common")
+
+    compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion") {
+        // This is provided by the explicit annotations dep in the api
+        exclude group: "org.jetbrains", module: "annotations"
+    }
+    compile "com.sparkjava:spark-kotlin:$sparkVersion"
+    compile "org.apache.commons:commons-compress:$apacheCompress"
+}
+
+mainClassName = "edu.oc.droidmaze.server.MainKt"
+jar {
+    manifest {
+        attributes "Main-Class": project.mainClassName,
+                "Implementation-Title": "DroidMaze Server",
+                "Implementation-Version": project.version,
+                "Specification-Title": "DroidMaze API",
+                "Specification-Version": project.version,
+                "Built-By": System.getProperty("user.name"),
+                "Built-Date": new Date(),
+                "Built-JDK": System.getProperty("java.version"),
+                "Automatic-Module-Name": moduleName
+    }
+}
+
+startScripts {
+    applicationName = archivesBaseName
+    doLast {
+        File bashScript = new File(outputDir, applicationName)
+        removeClasspath(bashScript.toPath(), applicationName)
+        File batScript = new File(outputDir, applicationName + ".bat")
+        removeClasspath(batScript.toPath(), applicationName)
+    }
+}
+
+distTar {
+    compression Compression.GZIP
+}
+
+distributions {
+    main {
+        applicationName = archivesBaseName
+    }
+}

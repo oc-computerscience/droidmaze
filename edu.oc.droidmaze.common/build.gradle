@@ -1,0 +1,16 @@
+plugins {
+    id "java-library"
+    id 'org.gradle.java.experimental-jigsaw' version '0.1.1'
+}
+
+dependencies {
+    compile project(":edu.oc.droidmaze.api")
+
+    compile "net.minecrell:terminalconsoleappender:1.0.0"
+    compile "org.apache.logging.log4j:log4j-iostreams:$log4jVersion"
+}
+
+sourceCompatibility = "9"
+targetCompatibility = "9"
+
+javaModule.name = "edu.oc.droidmaze.common"
